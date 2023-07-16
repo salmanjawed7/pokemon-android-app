@@ -12,9 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.salman.domain.repositories.PokemonRepository
 import com.salman.pokemonapp.ui.theme.PokemonAppTheme
+import dagger.android.AndroidInjection
 import javax.inject.Inject
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -23,11 +22,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    (application as PokemonApplication).applicationComponent.inject(this)
-    GlobalScope.launch {
-      val test = pokemonRepository.getPokemonDetail("bulbasaur")
-      println("CHALAA $test")
-    }
+    AndroidInjection.inject(this)
     setContent {
       PokemonAppTheme {
         // A surface container using the 'background' color from the theme

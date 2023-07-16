@@ -16,13 +16,10 @@ class PokemonRepositoryImpl @Inject constructor(
   private val pokemonApiService: PokemonApiService
 ) : PokemonRepository {
 
-  override suspend fun getPokemonList(offset: Int, limit: Int): Flow<PokemonListModel> =
-    flow<PokemonListModel> {
-//      pokemonApiService.pokemonList(offset, limit).
-//      val test = pokemonApiService.pokemonList(offset, limit)
-//      println("CHALAAA $test")
-//      emit(pokemonApiService.pokemonList(offset, limit).pokemon.map { it.toPokemonListModel() })
-    }.flowOn(Dispatchers.IO)
+  override suspend fun getPokemonList(offset: Int, limit: Int): List<PokemonListModel> {
+    return pokemonApiService.pokemonList(offset, limit).pokemon.map { it.toPokemonListModel() }
+  }
+
 
   override suspend fun getPokemonDetail(name: String): PokemonDetailModel {
     return pokemonApiService.pokemonDetail(name).toPokemonDetailModel()
