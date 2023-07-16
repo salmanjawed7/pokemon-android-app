@@ -5,23 +5,33 @@ import com.salman.data.mappers.toPokemonDetailModel
 import com.salman.data.mappers.toPokemonListModel
 import com.salman.domain.models.PokemonDetailModel
 import com.salman.domain.models.PokemonListModel
+import com.salman.domain.models.Resource
 import com.salman.domain.repositories.PokemonRepository
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class PokemonRepositoryImpl @Inject constructor(
   private val pokemonApiService: PokemonApiService
 ) : PokemonRepository {
+  override suspend fun getPokemonList(offset: Int, limit: Int): Flow<Resource<List<PokemonListModel>>> =
+    flow {
+//      emit(Resource.Loading(null))
+      val response = pokemonApiService.pokemonList(offset, limit)
+      if (response.isSuccessful && response.body() != null) {
+        emit(Resource.Success(response.body()!!.pokemon.map { it.toPokemonListModel() }))
+      } else {
+        emit(Resource.DataError(100))
+      }
+    }
 
-  override suspend fun getPokemonList(offset: Int, limit: Int): List<PokemonListModel> {
-    return pokemonApiService.pokemonList(offset, limit).pokemon.map { it.toPokemonListModel() }
-  }
-
-
-  override suspend fun getPokemonDetail(name: String): PokemonDetailModel {
-    return pokemonApiService.pokemonDetail(name).toPokemonDetailModel()
+  override suspend fun getPokemonDetail(name: String): Flow<Resource<PokemonDetailModel>> = flow {
+    emit(Resource.Loading(null))
+    val response = pokemonApiService.pokemonDetail(name)
+    if (response.isSuccessful && response.body() != null) {
+      emit(Resource.Success(response.body()!!.toPokemonDetailModel()))
+    } else {
+      emit(Resource.DataError(100))
+    }
   }
 }

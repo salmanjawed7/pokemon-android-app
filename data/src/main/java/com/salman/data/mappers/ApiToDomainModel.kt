@@ -7,14 +7,21 @@ import com.salman.domain.models.PokemonListModel
 import com.salman.domain.models.PokemonStatModel
 
 private const val BASE_IMAGE_URL =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
+  "https://assets.pokemon.com/assets/cms2/img/pokedex/full/"
 private const val URL_TO_REPLACE = "https://pokeapi.co/api/v2/pokemon/"
 
 fun Pokemon.toPokemonListModel(): PokemonListModel {
+  var pokemonNumber = url.replace(URL_TO_REPLACE, "").replace("/", "")
+  if (pokemonNumber.length < 3) {
+    when (pokemonNumber.length) {
+      1 -> pokemonNumber = "00$pokemonNumber"
+      2 -> pokemonNumber = "0$pokemonNumber"
+    }
+  }
   return PokemonListModel(
-    name = name,
+    name = name.replaceFirstChar { it.uppercase() },
     url = url,
-    imageUrl = BASE_IMAGE_URL + url.replace(URL_TO_REPLACE, "").replace("/", "") + ".png"
+    imageUrl = "$BASE_IMAGE_URL$pokemonNumber.png"
   )
 }
 

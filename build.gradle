@@ -26,4 +26,6 @@ ext {
     fragment_ktx = '1.6.0'
     multidex_version = '2.0.1'
     compose_compiler_version = '1.4.6'
+    nav_version = '2.6.0'
+    coil_version = '2.4.0'
 }
